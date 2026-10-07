@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laporan harian toko · 2026-10-06</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Hallmark · genre: modern-minimal · theme: Cobalt · design tokens
+   Cool engineered paper, cool charcoal ink, one cobalt signal accent.
+   Severity colours are data encodings, always paired with a text label.
+   Every colour and font in styles.css and the SVG charts reads from here. */
+:root {
+  /* paper + ink (hue 250–258, never pure white or black) */
+  --color-paper:    oklch(98.5% 0.004 250);
+  --color-paper-2:  oklch(96.5% 0.005 252);
+  --color-paper-3:  oklch(94% 0.006 254);
+  --color-ink:      oklch(24% 0.02 258);
+  --color-ink-2:    oklch(34% 0.018 257);
+  --color-muted:    oklch(50% 0.014 255);
+  --color-rule:     oklch(91% 0.008 255);
+  --color-rule-2:   oklch(83% 0.011 255);
+  --color-control:  oklch(64% 0.014 255);  /* input/button edges, 3:1 on paper */
+
+  /* the one signal */
+  --color-accent:     oklch(55% 0.20 256);
+  --color-accent-ink: oklch(99% 0.004 256);
+  --color-accent-hover: oklch(49% 0.19 256);
+  --color-focus:      oklch(55% 0.20 256);
+
+  /* trend colours for deltas (text) */
+  --color-up:   oklch(46% 0.11 155);
+  --color-down: oklch(50% 0.17 27);
+
+  /* severity fills (squares, bars) */
+  --color-critical: oklch(56% 0.19 27);
+  --color-high:     oklch(64% 0.16 52);
+  --color-medium:   oklch(84% 0.13 95);
+  --color-medium-edge: oklch(58% 0.11 85);  /* 3:1 outline around the light medium fill */
+  --color-error:    oklch(50% 0.17 27);
+
+  /* chart neutrals */
+  --color-bar:      oklch(80% 0.025 255);
+  --color-bar-2:    oklch(70% 0.03 255);
+  --color-shadow:   oklch(24% 0.02 258 / 0.25);
+
+  /* the one dark band (graphite) */
+  --color-band:       oklch(22% 0.016 260);
+  --color-band-rule:  oklch(34% 0.02 260);
+  --color-band-ink:   oklch(94% 0.008 255);
+  --color-band-ink-2: oklch(84% 0.012 256);
+  --color-band-muted: oklch(68% 0.014 256);
+  --color-band-accent: oklch(74% 0.14 256);
+
+  /* type: display + body, mono as a one-role outlier */
+  --font-display: "Space Grotesk", ui-sans-serif, "Segoe UI", sans-serif;
+  --font-body:    "IBM Plex Sans", ui-sans-serif, "Segoe UI", sans-serif;
+  /* outlier: command lines only (upload page + README-style hint) */
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* scale: major third, five sizes */
+  --text-xs:      0.75rem;
+  --text-sm:      0.875rem;
+  --text-base:    1rem;
+  --text-lg:      1.5625rem;
+  --text-display: clamp(2rem, 2.2vw + 1.1rem, 2.85rem);
+
+  --weight-body: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+  --tracking-display: -0.025em;
+  --tracking-label: 0.06em;
+  --leading-tight: 1.1;
+  --leading-body: 1.6;
+  --measure: 66ch;
+
+  /* space: 4 pt scale */
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+
+  --page-max: 1240px;
+  --gutter: clamp(1rem, 3.5vw, 2.5rem);
+  --rule: 1px;
+
+  /* shape */
+  --radius-btn: 6px;
+  --radius-input: 6px;
+  --radius-chip: 3px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+
+  /* layers */
+  --z-base: 1;
+  --z-sticky: 200;
+}
+
+/* Hallmark · genre: modern-minimal · macrostructure: Workbench (app) · theme: Cobalt · design-system: design.md · designed-as-app
+ * tone: utilitarian · anchor hue: 256 (cobalt) · enrichment: none · nav: N9 edge-aligned minimal · footer: Ft2 inline single line
+ * Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V5
+ * contrast: pass (40–41) · nav: N9 · footer: Ft2 · slop: pass (42–45) · honest: pass (46) · chrome: pass (47)
+ * tokens: pass (48) · responsive: pass (49) · icons: pass (30) · mobile: pass (34, 49, 50–57)
+ * deviations: body face IBM Plex Sans instead of Cobalt's Inter (typography.md bans Inter);
+ *   light bar fills (--color-bar, --color-medium) sit under 3:1 but every bar carries a text value,
+ *   and medium fills get a 3:1 --color-medium-edge outline.
+ */
+
+/* ---------- base ---------- */
+html, body { overflow-x: clip; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink-2);
+  font-family: var(--font-body);
+  font-weight: var(--weight-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-style: normal;
+  color: var(--color-ink);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  margin: 0;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+h2 { font-size: var(--text-lg); }
+h3 { font-size: var(--text-base); letter-spacing: 0; }
+p { margin: 0; }
+a { color: var(--color-ink); text-decoration-color: var(--color-rule-2); text-underline-offset: 3px; }
+@media (hover: hover) { a:hover { text-decoration-color: var(--color-accent); } }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.num, table, .kpi-value, .chart { font-variant-numeric: tabular-nums; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.page { max-width: var(--page-max); margin-inline: auto; padding-inline: var(--gutter); }
+
+/* ---------- top bar (N9 edge-aligned minimal) ---------- */
+.bar-top {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-md);
+  padding-block: var(--space-md);
+  border-bottom: var(--rule) solid var(--color-rule);
+}
+.wordmark {
+  display: inline-flex; align-items: center; gap: var(--space-xs);
+  font-family: var(--font-display); font-weight: var(--weight-bold); font-size: var(--text-base);
+  color: var(--color-ink); text-decoration: none; letter-spacing: -0.01em; white-space: nowrap;
+}
+.wordmark::before { content: ""; width: 0.6em; height: 0.6em; background: var(--color-accent); }
+.bar-top__actions { display: flex; align-items: center; gap: var(--space-sm); }
+@media (max-width: 48rem) {
+  .bar-top { flex-wrap: wrap; }
+  .bar-top__actions { flex: 1 1 100%; flex-wrap: wrap; }
+  .bar-top__actions .lang { margin-right: auto; }
+}
+.lang { display: flex; gap: var(--space-2xs); font-size: var(--text-sm); }
+.lang a {
+  padding: var(--space-2xs) var(--space-xs); border-radius: var(--radius-chip);
+  color: var(--color-muted); text-decoration: none; white-space: nowrap;
+}
+.lang a[aria-current="true"] { color: var(--color-ink); font-weight: var(--weight-medium); background: var(--color-paper-3); }
+@media (hover: hover) { .lang a:hover { color: var(--color-ink); } }
+.lang a:active { background: var(--color-paper-3); color: var(--color-ink); }
+
+/* ---------- buttons: 8 states ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs);
+  min-height: 2.75rem; padding: 0 var(--space-md);
+  border: var(--rule) solid var(--color-control); border-radius: var(--radius-btn);
+  background: var(--color-paper); color: var(--color-ink);
+  font: var(--weight-medium) var(--text-sm)/1 var(--font-body);
+  text-decoration: none; white-space: nowrap; cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+.btn--primary { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-accent-ink); }
+@media (hover: hover) {
+  .btn:hover { background: var(--color-paper-3); }
+  .btn--primary:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
+}
+.btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn[data-state="loading"] { cursor: progress; }
+.btn[data-state="loading"]::before {
+  content: ""; width: 0.9em; height: 0.9em; border-radius: 50%;
+  border: 2px solid currentColor; border-right-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+.btn[data-state="error"] { border-color: var(--color-error); }
+.btn[data-state="success"] { border-color: var(--color-up); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- form controls ---------- */
+.field { display: grid; gap: var(--space-2xs); }
+.field > label:not(.file), .label {
+  font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--color-muted);
+  text-transform: uppercase; letter-spacing: var(--tracking-label);
+}
+.input, .select {
+  min-height: 2.75rem; padding: 0 var(--space-sm);
+  border: var(--rule) solid var(--color-control); border-radius: var(--radius-input);
+  outline: 2px solid transparent; outline-offset: 1px;
+  background: var(--color-paper); color: var(--color-ink);
+  font: var(--text-sm) var(--font-body);
+}
+.input { width: 6.5rem; }
+@media (hover: hover) { .input:hover, .select:hover { background: var(--color-paper-2); } }
+.input:focus-visible, .select:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 1px; border-color: var(--color-ink-2); }
+.input:disabled, .select:disabled { opacity: 0.55; cursor: not-allowed; }
+.input:active, .select:active { border-color: var(--color-ink-2); }
+.input[aria-invalid="true"] { border-color: var(--color-error); }
+
+/* ---------- control strip (app only) ---------- */
+.controls {
+  display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-md) var(--space-lg);
+  padding-block: var(--space-md);
+  border-bottom: var(--rule) solid var(--color-rule);
+  font-size: var(--text-sm);
+}
+.controls__file { flex: 1 1 18rem; min-width: 0; color: var(--color-muted); }
+.controls__file strong { color: var(--color-ink); font-weight: var(--weight-medium); }
+.controls__file a { white-space: nowrap; }
+.controls form { display: flex; align-items: end; gap: var(--space-sm); flex-wrap: wrap; }
+.thresholds summary {
+  list-style: none; cursor: pointer; min-height: 2.75rem; display: flex; align-items: center;
+  color: var(--color-ink); white-space: nowrap; text-decoration: underline; text-decoration-color: var(--color-rule-2);
+  text-underline-offset: 3px;
+}
+.thresholds summary::-webkit-details-marker { display: none; }
+.thresholds summary:active { color: var(--color-ink-2); }
+.thresholds[open] summary { text-decoration-color: var(--color-accent); }
+.thresholds { position: relative; }
+.thresholds__body label { white-space: nowrap; }
+.thresholds__body {
+  display: flex; gap: var(--space-sm); align-items: end; flex-wrap: nowrap; width: max-content;
+  position: absolute; top: calc(100% + var(--space-xs)); right: 0; z-index: var(--z-sticky);
+  padding: var(--space-md); background: var(--color-paper); border: var(--rule) solid var(--color-rule-2);
+  border-radius: var(--radius-input); box-shadow: 0 8px 24px -12px var(--color-shadow);
+}
+@media (max-width: 40rem) { .thresholds__body { position: static; width: auto; flex-wrap: wrap; padding: var(--space-xs) 0 0; border: 0; box-shadow: none; } }
+
+/* ---------- title block ---------- */
+.titleblock { padding-block: var(--space-lg) var(--space-xl); display: grid; gap: var(--space-xs); }
+.title { font-size: var(--text-display); }
+.lede { color: var(--color-ink-2); max-width: var(--measure); }
+.doc-meta { font-size: var(--text-sm); color: var(--color-muted); }
+
+/* ---------- KPI strip (hairline-divided, lead cell wider) ---------- */
+.kpis {
+  display: grid; grid-template-columns: minmax(0, 1fr); margin: 0;
+  border-block: var(--rule) solid var(--color-rule-2);
+}
+.kpi { padding: var(--space-md) var(--space-lg) var(--space-md) 0; display: grid; align-content: start; gap: var(--space-3xs); }
+.kpi + .kpi { border-top: var(--rule) solid var(--color-rule); }
+.kpi dt { font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--color-muted);
+          text-transform: uppercase; letter-spacing: var(--tracking-label); }
+.kpi dd { margin: 0; }
+.kpi-value { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: var(--text-lg);
+             color: var(--color-ink); letter-spacing: -0.01em; white-space: nowrap; margin-bottom: var(--space-2xs) !important; }
+.kpi--lead .kpi-value { font-size: var(--text-display); letter-spacing: var(--tracking-display); }
+.kpi-note { font-size: var(--text-sm); color: var(--color-muted); }
+.kpi-note.up { color: var(--color-up); }
+.kpi-note.down { color: var(--color-down); }
+@media (min-width: 40rem) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi--lead { grid-column: 1 / -1; }
+  .kpi + .kpi { border-top: 0; }
+  .kpi:nth-child(n+2) { border-top: var(--rule) solid var(--color-rule); }
+}
+@media (min-width: 60rem) {
+  .kpis { grid-template-columns: minmax(0, 1.55fr) repeat(4, minmax(0, 1fr)); }
+  .kpi--lead { grid-column: auto; }
+  .kpi:nth-child(n+2) { border-top: 0; border-left: var(--rule) solid var(--color-rule); padding-left: var(--space-lg); }
+}
+
+/* ---------- sections ---------- */
+.section { padding-block: var(--space-2xl) 0; }
+.section--tight { padding-block: var(--space-xl) 0; }
+.section__head { display: grid; gap: var(--space-2xs); margin-bottom: var(--space-lg); max-width: var(--measure); }
+.section__note { color: var(--color-muted); font-size: var(--text-sm); }
+
+/* ---------- attention ---------- */
+.attention { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+@media (min-width: 60rem) { .attention { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; } }
+.flags { list-style: none; margin: 0; padding: 0; border-top: var(--rule) solid var(--color-rule-2); }
+.flag { padding-block: var(--space-md) var(--space-lg); border-bottom: var(--rule) solid var(--color-rule); display: grid; gap: var(--space-xs); }
+.flag__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2xs) var(--space-sm); }
+.flag__meta { font-size: var(--text-sm); color: var(--color-muted); }
+.flag__reasons { margin: 0; padding: 0; list-style: none; color: var(--color-ink); }
+.flag__reasons li + li { margin-top: var(--space-2xs); }
+.flag__action { font-size: var(--text-sm); color: var(--color-ink-2); }
+.flag__action b { font-weight: var(--weight-medium); color: var(--color-ink); }
+.empty { padding: var(--space-lg) 0; border-block: var(--rule) solid var(--color-rule); color: var(--color-ink-2); }
+
+/* severity marker: square + text, never colour alone */
+.sev {
+  display: inline-flex; align-items: center; gap: var(--space-xs);
+  font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--color-ink);
+  text-transform: uppercase; letter-spacing: var(--tracking-label); white-space: nowrap;
+}
+.sev::before { content: ""; width: 0.7rem; height: 0.7rem; border-radius: 1px; background: var(--color-rule-2); }
+.sev--critical::before { background: var(--color-critical); }
+.sev--high::before { background: var(--color-high); }
+.sev--medium::before { background: var(--color-medium); box-shadow: inset 0 0 0 1px var(--color-medium-edge); }
+.sev--normal { color: var(--color-muted); }
+
+/* ---------- figures ---------- */
+.figure { margin: 0; display: grid; align-content: start; gap: var(--space-sm); min-width: 0; }
+.figure figcaption { font-size: var(--text-sm); color: var(--color-ink); font-weight: var(--weight-medium); }
+.legend { display: flex; flex-wrap: wrap; gap: var(--space-2xs) var(--space-md); font-size: var(--text-xs); color: var(--color-muted); }
+.legend span { display: inline-flex; align-items: center; gap: var(--space-2xs); white-space: nowrap; }
+.legend i { display: inline-block; width: 0.7rem; height: 0.7rem; background: var(--color-bar); }
+.legend i.l-current { background: var(--color-accent); }
+.legend i.l-critical { background: var(--color-critical); }
+.legend i.l-high { background: var(--color-high); }
+.legend i.l-medium { background: var(--color-medium); box-shadow: inset 0 0 0 1px var(--color-medium-edge); }
+.legend i.l-line { height: 2px; background: var(--color-ink); }
+.legend i.l-tick { width: 2px; height: 0.8rem; background: var(--color-ink); }
+
+.chart { width: 100%; height: auto; display: block; font-family: var(--font-body); }
+.chart-grid { stroke: var(--color-rule); stroke-width: 1; }
+.chart-axis { fill: var(--color-muted); font-size: 11px; }
+.chart-label { fill: var(--color-ink-2); font-size: 12px; }
+.chart-value { fill: var(--color-muted); font-size: 12px; }
+.chart-value--flag { fill: var(--color-ink); font-weight: var(--weight-medium); }
+.bar { fill: var(--color-bar); }
+.chart--regions .bar { fill: var(--color-bar-2); }
+.bar--current { fill: var(--color-accent); }
+.bar--critical { fill: var(--color-critical); }
+.bar--high { fill: var(--color-high); }
+.bar--medium { fill: var(--color-medium); stroke: var(--color-medium-edge); stroke-width: 1; }
+.line-ma { fill: none; stroke: var(--color-ink); stroke-width: 1.75; stroke-linejoin: round; }
+.tick-baseline { stroke: var(--color-ink); stroke-width: 2; }
+
+.trends { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+@media (min-width: 60rem) { .trends { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); } }
+
+/* ---------- the one dark band: summary ---------- */
+.band { background: var(--color-band); color: var(--color-band-ink-2); margin-top: var(--space-2xl); }
+.band__inner { padding-block: var(--space-xl) var(--space-2xl); display: grid; gap: var(--space-md); }
+@media (min-width: 60rem) { .band__inner { grid-template-columns: minmax(0, 14rem) minmax(0, var(--measure)); column-gap: var(--space-xl); } }
+.band h2 { color: var(--color-band-ink); }
+.prose { max-width: var(--measure); display: grid; gap: var(--space-sm); }
+.prose ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--space-2xs); }
+.prose strong { color: var(--color-band-ink); font-weight: var(--weight-medium); }
+.band .source { font-size: var(--text-sm); color: var(--color-band-muted); border-top: var(--rule) solid var(--color-band-rule);
+                padding-top: var(--space-sm); margin-top: var(--space-xs); }
+
+/* ---------- tables ---------- */
+.table-wrap { overflow-x: auto; border-top: var(--rule) solid var(--color-rule-2); }
+table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+th, td { padding: var(--space-xs) var(--space-sm); text-align: right; white-space: nowrap; border-bottom: var(--rule) solid var(--color-rule); }
+th:first-child, td:first-child { padding-left: 0; }
+th { font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--color-muted);
+     text-transform: uppercase; letter-spacing: var(--tracking-label); background: var(--color-paper); }
+.l { text-align: left; }
+td.up { color: var(--color-up); }
+td.down { color: var(--color-down); }
+tr.is-flagged td:first-child { font-weight: var(--weight-medium); color: var(--color-ink); }
+.code { color: var(--color-muted); }
+.rules td:first-child { white-space: normal; }
+
+/* ---------- footer (Ft2 inline single line) ---------- */
+.foot {
+  margin-top: var(--space-3xl); padding-block: var(--space-md) var(--space-lg);
+  border-top: var(--rule) solid var(--color-rule);
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs) var(--space-md);
+  font-size: var(--text-sm); color: var(--color-muted);
+}
+.foot span + span::before { content: "·"; margin-right: var(--space-md); color: var(--color-rule-2); }
+@media (max-width: 40rem) { .foot { flex-direction: column; align-items: start; } .foot span + span::before { content: none; } }
+
+/* ---------- upload page ---------- */
+.upload { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-2xl); padding-block: var(--space-xl) var(--space-3xl); }
+@media (min-width: 60rem) { .upload { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; } }
+.upload__intro { display: grid; gap: var(--space-md); max-width: var(--measure); }
+.upload__form { display: grid; gap: var(--space-md); padding-top: var(--space-lg); border-top: var(--rule) solid var(--color-rule-2); }
+.file {
+  position: relative; display: flex; align-items: center; gap: var(--space-sm); min-height: 2.75rem; padding: var(--space-2xs);
+  border: var(--rule) dashed var(--color-control); border-radius: var(--radius-input); background: var(--color-paper);
+  outline: 2px solid transparent; outline-offset: 1px;
+}
+.file input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.file:focus-within { outline-color: var(--color-focus); }
+.file:has(input[aria-invalid="true"]) { border-color: var(--color-error); }
+@media (hover: hover) { .file:hover { background: var(--color-paper-2); } }
+.file__name { color: var(--color-muted); font-size: var(--text-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.help { font-size: var(--text-sm); color: var(--color-muted); min-height: 1lh; }
+.error { font-size: var(--text-sm); color: var(--color-error); min-height: 1lh; }
+.error strong { display: block; color: var(--color-ink); }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center; }
+.sample { display: grid; gap: var(--space-sm); padding-top: var(--space-lg); border-top: var(--rule) solid var(--color-rule); }
+.cmd { margin: 0; padding: var(--space-sm) 0; border-block: var(--rule) solid var(--color-rule);
+       font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ---------- motion + print ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 1ms !important; }
+  .btn[data-state="loading"]::before { animation: none; border-right-color: currentColor; opacity: 0.6; }
+}
+@media print {
+  .bar-top__actions, .controls { display: none; }
+  .band { background: var(--color-paper); color: var(--color-ink-2); }
+  .band h2, .prose strong { color: var(--color-ink); }
+}
+
+</style>
+</head>
+<body>
+<header class="page bar-top">
+  <span class="wordmark">Store Report</span>
+  <span class="doc-meta">Laporan harian toko · Dibuat 2026-10-07 20:34</span>
+</header>
+<main>
+<div class="page">
+<section class="titleblock">
+  <h1 class="title">Selasa, 6 Oktober 2026</h1>
+  <p class="lede">4 dari 20 toko perlu perhatian. Penjualan 13,8% di bawah rata-rata 7 hari.</p>
+</section>
+
+<dl class="kpis">
+  <div class="kpi kpi--lead">
+    <dt>Penjualan</dt>
+    <dd class="kpi-value">Rp 325,1 juta</dd>
+    <dd class="kpi-note down">−13,8% vs rata-rata 7 hari</dd>
+    <dd class="kpi-note down">−9,7% vs Selasa lalu</dd>
+  </div>
+  <div class="kpi">
+    <dt>Transaksi</dt>
+    <dd class="kpi-value">5.475</dd>
+    <dd class="kpi-note down">−6,9% vs kemarin</dd>
+  </div>
+  <div class="kpi">
+    <dt>Rata-rata belanja</dt>
+    <dd class="kpi-value">Rp 59.372</dd>
+    <dd class="kpi-note flat">per transaksi</dd>
+  </div>
+  <div class="kpi">
+    <dt>Item stock-out</dt>
+    <dd class="kpi-value">63</dd>
+    <dd class="kpi-note down">+20,6 vs rata-rata 7 hari</dd>
+  </div>
+  <div class="kpi">
+    <dt>Perlu perhatian</dt>
+    <dd class="kpi-value">4</dd>
+    <dd class="kpi-note flat">dari 20 toko</dd>
+    <dd class="kpi-note flat">19 toko bertransaksi</dd>
+  </div>
+</dl>
+
+<section class="section" id="attention" aria-labelledby="h-attention">
+  <div class="section__head"><h2 id="h-attention">Toko yang perlu perhatian</h2></div>
+  <div class="attention">
+    <ol class="flags">
+      <li class="flag">
+        <div class="flag__head">
+          <span class="sev sev--critical">Kritis</span>
+          <h3>Store 007 Depok</h3>
+          <span class="flag__meta">ST007 · Greater Jakarta</span>
+        </div>
+        <ul class="flag__reasons"><li>Penjualan Rp 6,6 juta, turun 56,9% dari rata-rata 7 hari Rp 15,3 juta; z-score −5,5.</li></ul>
+        <p class="flag__action"><b>Langkah berikutnya:</b> Tanyakan ke kepala toko soal jam buka, listrik atau kasir bermasalah, rak kosong, atau kompetitor baru.</p>
+      </li>
+      <li class="flag">
+        <div class="flag__head">
+          <span class="sev sev--critical">Kritis</span>
+          <h3>Store 013 Sukabumi</h3>
+          <span class="flag__meta">ST013 · West Java</span>
+        </div>
+        <ul class="flag__reasons"><li>Tidak ada transaksi tercatat. Biasanya sekitar 323 transaksi per hari. Kemungkinan POS atau koneksi toko mati.</li></ul>
+        <p class="flag__action"><b>Langkah berikutnya:</b> Hubungi kepala toko dan tim IT. Cek POS dan koneksi toko, pastikan transaksi offline tersinkron.</p>
+      </li>
+      <li class="flag">
+        <div class="flag__head">
+          <span class="sev sev--high">Tinggi</span>
+          <h3>Store 018 Magelang</h3>
+          <span class="flag__meta">ST018 · Central Java</span>
+        </div>
+        <ul class="flag__reasons"><li>21 item stock-out, 10,5× rata-rata 7 hari (2,0).</li></ul>
+        <p class="flag__action"><b>Langkah berikutnya:</b> Cek jadwal kirim dari DC dan parameter reorder. Isi ulang item yang kosong lebih dulu.</p>
+      </li>
+      <li class="flag">
+        <div class="flag__head">
+          <span class="sev sev--medium">Sedang</span>
+          <h3>Store 011 Bandung</h3>
+          <span class="flag__meta">ST011 · West Java</span>
+        </div>
+        <ul class="flag__reasons"><li>Penjualan Rp 41,2 juta, naik 57,3% dari rata-rata 7 hari Rp 26,2 juta; z-score 4,6.</li></ul>
+        <p class="flag__action"><b>Langkah berikutnya:</b> Cek transaksi besar atau double posting. Kalau promo atau pesanan borongan, catat sebagai referensi.</p>
+      </li>
+    </ol>
+    <figure class="figure">
+      <figcaption>Penjualan per toko dibanding rata-rata 7 hari masing-masing</figcaption>
+      <div class="legend" aria-hidden="true">
+        <span><i class="l-critical"></i>Kritis</span>
+        <span><i class="l-high"></i>Tinggi</span>
+        <span><i class="l-medium"></i>Sedang</span>
+        <span><i></i>Normal</span>
+        <span><i class="l-tick"></i>Rata-rata 7 hari</span>
+      </div>
+      <svg class="chart chart--stores" viewBox="0 0 470 448" role="img" aria-label="Penjualan per toko dibanding rata-rata 7 hari masing-masing" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg"><title>Penjualan per toko dibanding rata-rata 7 hari masing-masing</title><text class="chart-label" x="148" y="19.0" text-anchor="end">Store 011 Bandung</text><rect class="bar bar--medium" x="158" y="9" width="201.0" height="13"/><line class="tick-baseline" x1="285.8" x2="285.8" y1="6" y2="24"/><text class="chart-value chart-value--flag" x="468" y="19.0" text-anchor="end">Rp 41,2 juta</text><text class="chart-label" x="148" y="41.0" text-anchor="end">Store 017 Solo</text><rect class="bar" x="158" y="31" width="107.5" height="13"/><line class="tick-baseline" x1="280.3" x2="280.3" y1="28" y2="46"/><text class="chart-value" x="468" y="41.0" text-anchor="end">Rp 22,0 juta</text><text class="chart-label" x="148" y="63.0" text-anchor="end">Store 016 Semarang</text><rect class="bar" x="158" y="53" width="107.4" height="13"/><line class="tick-baseline" x1="273.8" x2="273.8" y1="50" y2="68"/><text class="chart-value" x="468" y="63.0" text-anchor="end">Rp 22,0 juta</text><text class="chart-label" x="148" y="85.0" text-anchor="end">Store 001 Rangkasbitung</text><rect class="bar" x="158" y="75" width="103.2" height="13"/><line class="tick-baseline" x1="270.7" x2="270.7" y1="72" y2="90"/><text class="chart-value" x="468" y="85.0" text-anchor="end">Rp 21,1 juta</text><text class="chart-label" x="148" y="107.0" text-anchor="end">Store 010 Ciputat</text><rect class="bar" x="158" y="97" width="96.7" height="13"/><line class="tick-baseline" x1="268.7" x2="268.7" y1="94" y2="112"/><text class="chart-value" x="468" y="107.0" text-anchor="end">Rp 19,8 juta</text><text class="chart-label" x="148" y="129.0" text-anchor="end">Store 003 Cilegon</text><rect class="bar" x="158" y="119" width="93.8" height="13"/><line class="tick-baseline" x1="268.0" x2="268.0" y1="116" y2="134"/><text class="chart-value" x="468" y="129.0" text-anchor="end">Rp 19,2 juta</text><text class="chart-label" x="148" y="151.0" text-anchor="end">Store 006 Bekasi</text><rect class="bar" x="158" y="141" width="90.2" height="13"/><line class="tick-baseline" x1="251.2" x2="251.2" y1="138" y2="156"/><text class="chart-value" x="468" y="151.0" text-anchor="end">Rp 18,5 juta</text><text class="chart-label" x="148" y="173.0" text-anchor="end">Store 020 Purwokerto</text><rect class="bar" x="158" y="163" width="89.1" height="13"/><line class="tick-baseline" x1="258.7" x2="258.7" y1="160" y2="178"/><text class="chart-value" x="468" y="173.0" text-anchor="end">Rp 18,2 juta</text><text class="chart-label" x="148" y="195.0" text-anchor="end">Store 005 Tangerang</text><rect class="bar" x="158" y="185" width="87.5" height="13"/><line class="tick-baseline" x1="250.4" x2="250.4" y1="182" y2="200"/><text class="chart-value" x="468" y="195.0" text-anchor="end">Rp 17,9 juta</text><text class="chart-label" x="148" y="217.0" text-anchor="end">Store 019 Tegal</text><rect class="bar" x="158" y="207" width="84.0" height="13"/><line class="tick-baseline" x1="255.1" x2="255.1" y1="204" y2="222"/><text class="chart-value" x="468" y="217.0" text-anchor="end">Rp 17,2 juta</text><text class="chart-label" x="148" y="239.0" text-anchor="end">Store 002 Serang</text><rect class="bar" x="158" y="229" width="83.6" height="13"/><line class="tick-baseline" x1="261.4" x2="261.4" y1="226" y2="244"/><text class="chart-value" x="468" y="239.0" text-anchor="end">Rp 17,1 juta</text><text class="chart-label" x="148" y="261.0" text-anchor="end">Store 014 Cianjur</text><rect class="bar" x="158" y="251" width="76.5" height="13"/><line class="tick-baseline" x1="246.0" x2="246.0" y1="248" y2="266"/><text class="chart-value" x="468" y="261.0" text-anchor="end">Rp 15,7 juta</text><text class="chart-label" x="148" y="283.0" text-anchor="end">Store 012 Cimahi</text><rect class="bar" x="158" y="273" width="67.6" height="13"/><line class="tick-baseline" x1="237.7" x2="237.7" y1="270" y2="288"/><text class="chart-value" x="468" y="283.0" text-anchor="end">Rp 13,9 juta</text><text class="chart-label" x="148" y="305.0" text-anchor="end">Store 015 Garut</text><rect class="bar" x="158" y="295" width="63.9" height="13"/><line class="tick-baseline" x1="232.5" x2="232.5" y1="292" y2="310"/><text class="chart-value" x="468" y="305.0" text-anchor="end">Rp 13,1 juta</text><text class="chart-label" x="148" y="327.0" text-anchor="end">Store 018 Magelang</text><rect class="bar bar--high" x="158" y="317" width="58.5" height="13"/><line class="tick-baseline" x1="228.4" x2="228.4" y1="314" y2="332"/><text class="chart-value chart-value--flag" x="468" y="327.0" text-anchor="end">Rp 12,0 juta</text><text class="chart-label" x="148" y="349.0" text-anchor="end">Store 004 Pandeglang</text><rect class="bar" x="158" y="339" width="55.8" height="13"/><line class="tick-baseline" x1="224.2" x2="224.2" y1="336" y2="354"/><text class="chart-value" x="468" y="349.0" text-anchor="end">Rp 11,4 juta</text><text class="chart-label" x="148" y="371.0" text-anchor="end">Store 009 Cibinong</text><rect class="bar" x="158" y="361" width="51.4" height="13"/><line class="tick-baseline" x1="216.9" x2="216.9" y1="358" y2="376"/><text class="chart-value" x="468" y="371.0" text-anchor="end">Rp 10,5 juta</text><text class="chart-label" x="148" y="393.0" text-anchor="end">Store 008 Bogor</text><rect class="bar" x="158" y="383" width="36.4" height="13"/><line class="tick-baseline" x1="201.3" x2="201.3" y1="380" y2="398"/><text class="chart-value" x="468" y="393.0" text-anchor="end">Rp 7,4 juta</text><text class="chart-label" x="148" y="415.0" text-anchor="end">Store 007 Depok</text><rect class="bar bar--critical" x="158" y="405" width="32.3" height="13"/><line class="tick-baseline" x1="232.9" x2="232.9" y1="402" y2="420"/><text class="chart-value chart-value--flag" x="468" y="415.0" text-anchor="end">Rp 6,6 juta</text><text class="chart-label" x="148" y="437.0" text-anchor="end">Store 013 Sukabumi</text><line class="tick-baseline" x1="255.4" x2="255.4" y1="424" y2="442"/><text class="chart-value chart-value--flag" x="468" y="437.0" text-anchor="end">tanpa penjualan</text></svg>
+    </figure>
+  </div>
+</section>
+
+</div>
+
+<section class="band" id="summary" aria-labelledby="h-summary">
+  <div class="page band__inner">
+    <h2 id="h-summary">Ringkasan</h2>
+    <div class="prose">
+      <p>Pada Selasa, 6 Oktober 2026, 20 toko menjual Rp 325,1 juta dari 5.475 transaksi, turun 13,8% dari rata-rata 7 hari dan turun 9,7% dari Selasa lalu. Rata-rata belanja Rp 59.372 per transaksi.</p>
+<p>Central Java menjadi wilayah terbesar dengan Rp 91,5 juta (28% dari total). Penjualan tertinggi: Store 011 Bandung (Rp 41,2 juta). Kategori yang paling sering masuk tiga besar: Snacks, Beverages dan Staples.</p>
+<p>4 toko perlu perhatian. Total stock-out 63 item (rata-rata 7 hari: 42,4).</p>
+<ul><li>Store 007 Depok (kritis): Penjualan Rp 6,6 juta, turun 56,9% dari rata-rata 7 hari Rp 15,3 juta; z-score −5,5.</li><li>Store 013 Sukabumi (kritis): Tidak ada transaksi tercatat. Biasanya sekitar 323 transaksi per hari. Kemungkinan POS atau koneksi toko mati.</li><li>Store 018 Magelang (tinggi): 21 item stock-out, 10,5× rata-rata 7 hari (2,0).</li><li>Store 011 Bandung (sedang): Penjualan Rp 41,2 juta, naik 57,3% dari rata-rata 7 hari Rp 26,2 juta; z-score 4,6.</li></ul>
+<p>Langkah berikutnya:</p>
+<ul><li>Store 007 Depok: Tanyakan ke kepala toko soal jam buka, listrik atau kasir bermasalah, rak kosong, atau kompetitor baru.</li><li>Store 013 Sukabumi: Hubungi kepala toko dan tim IT. Cek POS dan koneksi toko, pastikan transaksi offline tersinkron.</li><li>Store 018 Magelang: Cek jadwal kirim dari DC dan parameter reorder. Isi ulang item yang kosong lebih dulu.</li><li>Store 011 Bandung: Cek transaksi besar atau double posting. Kalau promo atau pesanan borongan, catat sebagai referensi.</li></ul>
+      <p class="source">Ditulis oleh template berbasis aturan (tanpa API key).</p>
+    </div>
+  </div>
+</section>
+
+<div class="page">
+<section class="section trends" id="trends" aria-label="Total penjualan, 30 hari terakhir">
+  <figure class="figure">
+    <figcaption>Total penjualan, 30 hari terakhir</figcaption>
+    <div class="legend" aria-hidden="true">
+      <span><i></i>Penjualan</span>
+      <span><i class="l-current"></i>tanggal laporan</span>
+      <span><i class="l-line"></i>rata-rata bergerak 7 hari</span>
+    </div>
+    <svg class="chart chart--trend" viewBox="0 0 720 250" role="img" aria-label="Total penjualan, 30 hari terakhir" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg"><title>Total penjualan, 30 hari terakhir</title><line class="chart-grid" x1="70" x2="712" y1="220.0" y2="220.0"/><text class="chart-axis" x="62" y="224.0" text-anchor="end">Rp 0</text><line class="chart-grid" x1="70" x2="712" y1="178.0" y2="178.0"/><text class="chart-axis" x="62" y="182.0" text-anchor="end">Rp 100 juta</text><line class="chart-grid" x1="70" x2="712" y1="136.0" y2="136.0"/><text class="chart-axis" x="62" y="140.0" text-anchor="end">Rp 200 juta</text><line class="chart-grid" x1="70" x2="712" y1="94.0" y2="94.0"/><text class="chart-axis" x="62" y="98.0" text-anchor="end">Rp 300 juta</text><line class="chart-grid" x1="70" x2="712" y1="52.0" y2="52.0"/><text class="chart-axis" x="62" y="56.0" text-anchor="end">Rp 400 juta</text><line class="chart-grid" x1="70" x2="712" y1="10.0" y2="10.0"/><text class="chart-axis" x="62" y="14.0" text-anchor="end">Rp 500 juta</text><rect class="bar" x="73.4" y="77.5" width="14.6" height="142.5"><title>7 Sep: Rp 339,4 juta</title></rect><rect class="bar" x="94.8" y="75.9" width="14.6" height="144.1"><title>8 Sep: Rp 343,1 juta</title></rect><rect class="bar" x="116.2" y="75.6" width="14.6" height="144.4"><title>9 Sep: Rp 343,8 juta</title></rect><rect class="bar" x="137.6" y="74.9" width="14.6" height="145.1"><title>10 Sep: Rp 345,5 juta</title></rect><rect class="bar" x="159.0" y="66.6" width="14.6" height="153.4"><title>11 Sep: Rp 365,2 juta</title></rect><text class="chart-axis" x="166.3" y="242" text-anchor="middle">11 Sep</text><rect class="bar" x="180.4" y="44.8" width="14.6" height="175.2"><title>12 Sep: Rp 417,1 juta</title></rect><rect class="bar" x="201.8" y="53.5" width="14.6" height="166.5"><title>13 Sep: Rp 396,5 juta</title></rect><rect class="bar" x="223.2" y="76.4" width="14.6" height="143.6"><title>14 Sep: Rp 341,8 juta</title></rect><rect class="bar" x="244.6" y="79.1" width="14.6" height="140.9"><title>15 Sep: Rp 335,5 juta</title></rect><rect class="bar" x="266.0" y="79.8" width="14.6" height="140.2"><title>16 Sep: Rp 333,7 juta</title></rect><text class="chart-axis" x="273.3" y="242" text-anchor="middle">16 Sep</text><rect class="bar" x="287.4" y="77.2" width="14.6" height="142.8"><title>17 Sep: Rp 340,0 juta</title></rect><rect class="bar" x="308.8" y="64.3" width="14.6" height="155.7"><title>18 Sep: Rp 370,6 juta</title></rect><rect class="bar" x="330.2" y="43.5" width="14.6" height="176.5"><title>19 Sep: Rp 420,1 juta</title></rect><rect class="bar" x="351.6" y="52.4" width="14.6" height="167.6"><title>20 Sep: Rp 399,0 juta</title></rect><rect class="bar" x="373.0" y="80.4" width="14.6" height="139.6"><title>21 Sep: Rp 332,5 juta</title></rect><text class="chart-axis" x="380.3" y="242" text-anchor="middle">21 Sep</text><rect class="bar" x="394.4" y="85.9" width="14.6" height="134.1"><title>22 Sep: Rp 319,2 juta</title></rect><rect class="bar" x="415.8" y="79.5" width="14.6" height="140.5"><title>23 Sep: Rp 334,4 juta</title></rect><rect class="bar" x="437.2" y="74.4" width="14.6" height="145.6"><title>24 Sep: Rp 346,6 juta</title></rect><rect class="bar" x="458.6" y="48.7" width="14.6" height="171.3"><title>25 Sep: Rp 407,8 juta</title></rect><rect class="bar" x="480.0" y="30.2" width="14.6" height="189.8"><title>26 Sep: Rp 452,0 juta</title></rect><text class="chart-axis" x="487.3" y="242" text-anchor="middle">26 Sep</text><rect class="bar" x="501.4" y="36.5" width="14.6" height="183.5"><title>27 Sep: Rp 436,9 juta</title></rect><rect class="bar" x="522.8" y="68.2" width="14.6" height="151.8"><title>28 Sep: Rp 361,3 juta</title></rect><rect class="bar" x="544.2" y="68.7" width="14.6" height="151.3"><title>29 Sep: Rp 360,2 juta</title></rect><rect class="bar" x="565.6" y="68.2" width="14.6" height="151.8"><title>30 Sep: Rp 361,5 juta</title></rect><rect class="bar" x="587.0" y="65.5" width="14.6" height="154.5"><title>1 Okt: Rp 367,9 juta</title></rect><text class="chart-axis" x="594.3" y="242" text-anchor="middle">1 Okt</text><rect class="bar" x="608.4" y="54.0" width="14.6" height="166.0"><title>2 Okt: Rp 395,3 juta</title></rect><rect class="bar" x="629.8" y="43.1" width="14.6" height="176.9"><title>3 Okt: Rp 421,2 juta</title></rect><rect class="bar" x="651.2" y="55.3" width="14.6" height="164.7"><title>4 Okt: Rp 392,2 juta</title></rect><rect class="bar" x="672.6" y="77.1" width="14.6" height="142.9"><title>5 Okt: Rp 340,2 juta</title></rect><rect class="bar bar--current" x="694.0" y="83.5" width="14.6" height="136.5"><title>6 Okt: Rp 325,1 juta</title></rect><text class="chart-axis" x="701.3" y="242" text-anchor="middle">6 Okt</text><polyline class="line-ma" points="80.7,64.2 102.1,65.2 123.5,66.2 144.9,66.5 166.3,66.5 187.7,66.2 209.1,67.0 230.5,66.8 251.9,67.3 273.3,67.9 294.7,68.2 316.1,67.9 337.5,67.7 358.9,67.6 380.3,68.1 401.7,69.1 423.1,69.1 444.5,68.7 465.9,66.4 487.3,64.5 508.7,62.2 530.1,60.5 551.5,58.0 572.9,56.4 594.3,55.1 615.7,55.9 637.1,57.7 658.5,60.4 679.9,61.7 701.3,63.8"/></svg>
+  </figure>
+  <figure class="figure">
+    <figcaption>Penjualan per wilayah</figcaption>
+    <svg class="chart chart--regions" viewBox="0 0 380 136" role="img" aria-label="Penjualan per wilayah" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg"><title>Penjualan per wilayah</title><text class="chart-label" x="100" y="24.0" text-anchor="end">Central Java</text><rect class="bar" x="110" y="12" width="139.0" height="16"/><text class="chart-value" x="378" y="24.0" text-anchor="end">Rp 91,5 juta · 28%</text><text class="chart-label" x="100" y="56.0" text-anchor="end">West Java</text><rect class="bar" x="110" y="44" width="127.4" height="16"/><text class="chart-value" x="378" y="56.0" text-anchor="end">Rp 83,8 juta · 26%</text><text class="chart-label" x="100" y="88.0" text-anchor="end">Greater Jakarta</text><rect class="bar" x="110" y="76" width="122.8" height="16"/><text class="chart-value" x="378" y="88.0" text-anchor="end">Rp 80,8 juta · 25%</text><text class="chart-label" x="100" y="120.0" text-anchor="end">Banten</text><rect class="bar" x="110" y="108" width="104.7" height="16"/><text class="chart-value" x="378" y="120.0" text-anchor="end">Rp 68,9 juta · 21%</text></svg>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="l" scope="col">Wilayah</th><th scope="col">Toko</th><th scope="col">vs 7 hari</th><th scope="col">Stock-out</th></tr></thead>
+        <tbody>
+          <tr><td class="l">Central Java</td><td>5</td><td class="down">−11,8%</td><td>27</td></tr>
+          <tr><td class="l">West Java</td><td>5</td><td class="down">−12,5%</td><td>12</td></tr>
+          <tr><td class="l">Greater Jakarta</td><td>6</td><td class="down">−16,7%</td><td>12</td></tr>
+          <tr><td class="l">Banten</td><td>4</td><td class="down">−14,2%</td><td>12</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</section>
+
+<section class="section" id="stores" aria-labelledby="h-stores">
+  <div class="section__head"><h2 id="h-stores">Semua toko</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th class="l" scope="col">Toko</th><th class="l" scope="col">Wilayah</th>
+        <th scope="col">Penjualan</th><th scope="col">Rata-rata 7 hari</th><th scope="col">vs 7 hari</th>
+        <th scope="col">z-score</th><th scope="col">Transaksi</th><th scope="col">Rata-rata belanja</th>
+        <th scope="col">Stock-out</th><th class="l" scope="col">Status</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="l">Store 001 Rangkasbitung</td><td class="l">Banten</td>
+          <td>Rp 21.147.900</td><td>Rp 23.092.457</td><td class="down">−8,4%</td>
+          <td>−0,8</td><td>357</td><td>Rp 59.238</td><td>5</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 002 Serang</td><td class="l">Banten</td>
+          <td>Rp 17.129.800</td><td>Rp 21.177.443</td><td class="down">−19,1%</td>
+          <td>−1,4</td><td>328</td><td>Rp 52.225</td><td>3</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 003 Cilegon</td><td class="l">Banten</td>
+          <td>Rp 19.225.000</td><td>Rp 22.548.757</td><td class="down">−14,7%</td>
+          <td>−1,3</td><td>351</td><td>Rp 54.772</td><td>2</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 004 Pandeglang</td><td class="l">Banten</td>
+          <td>Rp 11.432.900</td><td>Rp 13.556.343</td><td class="down">−15,7%</td>
+          <td>−1,7</td><td>259</td><td>Rp 44.142</td><td>2</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 005 Tangerang</td><td class="l">Greater Jakarta</td>
+          <td>Rp 17.930.900</td><td>Rp 18.942.957</td><td class="down">−5,3%</td>
+          <td>−0,8</td><td>341</td><td>Rp 52.583</td><td>1</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 006 Bekasi</td><td class="l">Greater Jakarta</td>
+          <td>Rp 18.477.600</td><td>Rp 19.089.957</td><td class="down">−3,2%</td>
+          <td>−0,3</td><td>249</td><td>Rp 74.207</td><td>4</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr class="is-flagged">
+          <td class="l">Store 007 Depok</td><td class="l">Greater Jakarta</td>
+          <td>Rp 6.616.200</td><td>Rp 15.345.557</td><td class="down">−56,9%</td>
+          <td>−5,5</td><td>155</td><td>Rp 42.685</td><td>4</td>
+          <td class="l"><span class="sev sev--critical">Kritis</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 008 Bogor</td><td class="l">Greater Jakarta</td>
+          <td>Rp 7.449.500</td><td>Rp 8.874.829</td><td class="down">−16,1%</td>
+          <td>−1,3</td><td>152</td><td>Rp 49.010</td><td>2</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 009 Cibinong</td><td class="l">Greater Jakarta</td>
+          <td>Rp 10.527.200</td><td>Rp 12.068.171</td><td class="down">−12,8%</td>
+          <td>−1,2</td><td>141</td><td>Rp 74.661</td><td>1</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 010 Ciputat</td><td class="l">Greater Jakarta</td>
+          <td>Rp 19.813.500</td><td>Rp 22.681.700</td><td class="down">−12,6%</td>
+          <td>−1,2</td><td>334</td><td>Rp 59.322</td><td>0</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr class="is-flagged">
+          <td class="l">Store 011 Bandung</td><td class="l">West Java</td>
+          <td>Rp 41.186.000</td><td>Rp 26.181.943</td><td class="up">+57,3%</td>
+          <td>4,6</td><td>561</td><td>Rp 73.415</td><td>5</td>
+          <td class="l"><span class="sev sev--medium">Sedang</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 012 Cimahi</td><td class="l">West Java</td>
+          <td>Rp 13.859.600</td><td>Rp 16.333.743</td><td class="down">−15,1%</td>
+          <td>−1,6</td><td>200</td><td>Rp 69.298</td><td>1</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr class="is-flagged">
+          <td class="l">Store 013 Sukabumi</td><td class="l">West Java</td>
+          <td>Rp 0</td><td>Rp 19.960.400</td><td class="down">−100,0%</td>
+          <td>−8,1</td><td>0</td><td>Rp 0</td><td>2</td>
+          <td class="l"><span class="sev sev--critical">Kritis</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 014 Cianjur</td><td class="l">West Java</td>
+          <td>Rp 15.683.800</td><td>Rp 18.028.471</td><td class="down">−13,0%</td>
+          <td>−1,0</td><td>278</td><td>Rp 56.417</td><td>1</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 015 Garut</td><td class="l">West Java</td>
+          <td>Rp 13.098.100</td><td>Rp 15.274.786</td><td class="down">−14,3%</td>
+          <td>−2,0</td><td>214</td><td>Rp 61.206</td><td>3</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 016 Semarang</td><td class="l">Central Java</td>
+          <td>Rp 22.012.700</td><td>Rp 23.735.857</td><td class="down">−7,3%</td>
+          <td>−0,3</td><td>324</td><td>Rp 67.940</td><td>0</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 017 Solo</td><td class="l">Central Java</td>
+          <td>Rp 22.027.700</td><td>Rp 25.059.057</td><td class="down">−12,1%</td>
+          <td>−1,0</td><td>394</td><td>Rp 55.908</td><td>2</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr class="is-flagged">
+          <td class="l">Store 018 Magelang</td><td class="l">Central Java</td>
+          <td>Rp 11.990.500</td><td>Rp 14.433.186</td><td class="down">−16,9%</td>
+          <td>−1,5</td><td>269</td><td>Rp 44.574</td><td>21</td>
+          <td class="l"><span class="sev sev--high">Tinggi</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 019 Tegal</td><td class="l">Central Java</td>
+          <td>Rp 17.206.600</td><td>Rp 19.889.343</td><td class="down">−13,5%</td>
+          <td>−1,3</td><td>228</td><td>Rp 75.468</td><td>4</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="l">Store 020 Purwokerto</td><td class="l">Central Java</td>
+          <td>Rp 18.248.700</td><td>Rp 20.634.486</td><td class="down">−11,6%</td>
+          <td>−1,1</td><td>340</td><td>Rp 53.673</td><td>0</td>
+          <td class="l"><span class="sev sev--normal">Normal</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="method" aria-labelledby="h-method">
+  <div class="section__head">
+    <h2 id="h-method">Cara toko ditandai</h2>
+    <p class="section__note">Setiap toko dibandingkan dengan riwayatnya sendiri, jadi toko kecil tidak ditandai hanya karena kecil. Baseline adalah 7 hari sebelumnya; hari dengan 0 transaksi (gangguan) tidak dihitung. z-score membandingkan hari ini dengan 14 hari sebelumnya.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="rules">
+      <thead><tr><th class="l" scope="col">Aturan</th><th class="l" scope="col">Tingkat</th></tr></thead>
+      <tbody>
+        <tr><td class="l">Tidak ada transaksi sepanjang hari</td><td class="l"><span class="sev sev--critical">Kritis</span></td></tr>
+        <tr><td class="l">Toko tidak ada di file padahal ada di hari-hari sebelumnya</td><td class="l"><span class="sev sev--critical">Kritis</span></td></tr>
+        <tr><td class="l">Penjualan turun 25% atau lebih dari rata-rata 7 hari (50% atau lebih = kritis)</td><td class="l"><span class="sev sev--high">Tinggi</span></td></tr>
+        <tr><td class="l">z-score −3,0 atau lebih rendah (turun kurang dari 25%)</td><td class="l"><span class="sev sev--medium">Sedang</span></td></tr>
+        <tr><td class="l">Penjualan naik 50% atau lebih dari rata-rata 7 hari, atau z-score +3,0 atau lebih</td><td class="l"><span class="sev sev--medium">Sedang</span></td></tr>
+        <tr><td class="l">Stock-out minimal 2× rata-rata 7 hari dan bertambah 5 item atau lebih</td><td class="l"><span class="sev sev--high">Tinggi</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</div>
+</main>
+<footer class="page foot">
+  <span>Daily Store Report Assistant v2.0.0</span>
+  <span>Data contoh sintetis</span>
+  <span><a href="#method">Cara toko ditandai</a></span>
+</footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ vm.t('doc_title') }} · {{ vm.date_iso }}</title>
+{% include "_fonts.html.j2" %}
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+<header class="page bar-top">
+  <a class="wordmark" href="/?lang={{ lang }}">{{ vm.t('product') }}</a>
+  <div class="bar-top__actions">
+    <nav class="lang" aria-label="{{ vm.t('language') }}">
+      <a href="?{{ qs(lang='en') }}"{% if lang == 'en' %} aria-current="true"{% endif %}>EN</a>
+      <a href="?{{ qs(lang='id') }}"{% if lang == 'id' %} aria-current="true"{% endif %}>ID</a>
+    </nav>
+    <a class="btn" href="/report/{{ token }}/flags.csv?{{ qs() }}">{{ vm.t('download_csv') }}</a>
+    <a class="btn btn--primary" href="/report/{{ token }}/report.html?{{ qs() }}">{{ vm.t('download_html') }}</a>
+  </div>
+</header>
+
+<div class="page controls">
+  <p class="controls__file"><strong>{{ file_meta.split(' · ')[0] }}</strong>{% for part in file_meta.split(' · ')[1:] %} · {{ part }}{% endfor %} · <a href="/?lang={{ lang }}">{{ vm.t('new_file') }}</a></p>
+  <form method="get" action="/report/{{ token }}" id="controls">
+    <input type="hidden" name="lang" value="{{ lang }}">
+    <div class="field">
+      <label for="date">{{ vm.t('report_date') }}</label>
+      <select class="select" id="date" name="date" data-autosubmit>
+        {%- for iso, label in dates %}
+        <option value="{{ iso }}"{% if iso == params.date %} selected{% endif %}>{{ label }}</option>
+        {%- endfor %}
+      </select>
+    </div>
+    <details class="thresholds">
+      <summary>{{ vm.t('thresholds') }}</summary>
+      <div class="thresholds__body">
+        <div class="field">
+          <label for="drop">{{ vm.t('drop_threshold') }}</label>
+          <input class="input" type="number" id="drop" name="drop" min="5" max="90" step="5" value="{{ params.drop }}">
+        </div>
+        <div class="field">
+          <label for="z">{{ vm.t('z_threshold') }}</label>
+          <input class="input" type="number" id="z" name="z" min="1" max="6" step="0.5" value="{{ params.z }}">
+        </div>
+      </div>
+    </details>
+    <button class="btn" type="submit">{{ vm.t('apply') }}</button>
+  </form>
+</div>
+
+<main>
+{% include "_body.html.j2" %}
+</main>
+
+<footer class="page foot">
+  <span>{{ vm.t('footer_tool', v=vm.version) }}</span>
+  <span>{{ vm.t('synthetic') if token == 'sample' else file_meta.split(' · ')[0] }}</span>
+  <span><a href="#method">{{ vm.t('method') }}</a></span>
+</footer>
+<script>
+  document.querySelectorAll("[data-autosubmit]").forEach(function (el) {
+    el.addEventListener("change", function () { el.form.requestSubmit(); });
+  });
+</script>
+</body>
+</html>

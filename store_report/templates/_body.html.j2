@@ -1,0 +1,134 @@
+{#- Shared report body. Used by the standalone report and the web app. -#}
+{%- set t = vm.t -%}
+<div class="page">
+<section class="titleblock">
+  <h1 class="title">{{ vm.date_long }}</h1>
+  <p class="lede">{{ vm.lede }}</p>
+</section>
+
+<dl class="kpis">
+  {%- for k in vm.kpis %}
+  <div class="kpi{% if k.lead %} kpi--lead{% endif %}">
+    <dt>{{ k.label }}</dt>
+    <dd class="kpi-value">{{ k.value }}</dd>
+    {%- for note, trend in k.notes %}
+    <dd class="kpi-note {{ trend }}">{{ note }}</dd>
+    {%- endfor %}
+  </div>
+  {%- endfor %}
+</dl>
+
+<section class="section" id="attention" aria-labelledby="h-attention">
+  <div class="section__head"><h2 id="h-attention">{{ t('attention') }}</h2></div>
+  <div class="attention">
+    {%- if vm.attention %}
+    <ol class="flags">
+      {%- for a in vm.attention %}
+      <li class="flag">
+        <div class="flag__head">
+          <span class="sev sev--{{ a.severity }}">{{ a.severity_label }}</span>
+          <h3>{{ a.store_name }}</h3>
+          <span class="flag__meta">{{ a.store_code }} · {{ a.region }}</span>
+        </div>
+        <ul class="flag__reasons">{% for r in a.reasons %}<li>{{ r }}</li>{% endfor %}</ul>
+        <p class="flag__action"><b>{{ t('action') }}:</b> {{ a.actions | join(' ') }}</p>
+      </li>
+      {%- endfor %}
+    </ol>
+    {%- else %}
+    <p class="empty">{{ t('attention_none') }}</p>
+    {%- endif %}
+    <figure class="figure">
+      <figcaption>{{ t('sales_vs_baseline') }}</figcaption>
+      <div class="legend" aria-hidden="true">
+        <span><i class="l-critical"></i>{{ vm.sev_labels.critical }}</span>
+        <span><i class="l-high"></i>{{ vm.sev_labels.high }}</span>
+        <span><i class="l-medium"></i>{{ vm.sev_labels.medium }}</span>
+        <span><i></i>{{ t('status_normal') }}</span>
+        <span><i class="l-tick"></i>{{ t('col_avg7') }}</span>
+      </div>
+      {{ vm.chart_stores | safe }}
+    </figure>
+  </div>
+</section>
+
+</div>
+
+<section class="band" id="summary" aria-labelledby="h-summary">
+  <div class="page band__inner">
+    <h2 id="h-summary">{{ t('summary') }}</h2>
+    <div class="prose">
+      {{ vm.summary_html | safe }}
+      <p class="source">{{ t('summary_source', src=vm.summary_source) }}</p>
+    </div>
+  </div>
+</section>
+
+<div class="page">
+<section class="section trends" id="trends" aria-label="{{ t('trend') }}">
+  <figure class="figure">
+    <figcaption>{{ t('trend') }}</figcaption>
+    <div class="legend" aria-hidden="true">
+      <span><i></i>{{ t('kpi_sales') }}</span>
+      <span><i class="l-current"></i>{{ t('trend_legend_day') }}</span>
+      <span><i class="l-line"></i>{{ t('trend_legend_ma') }}</span>
+    </div>
+    {{ vm.chart_trend | safe }}
+  </figure>
+  <figure class="figure">
+    <figcaption>{{ t('regions') }}</figcaption>
+    {{ vm.chart_regions | safe }}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="l" scope="col">{{ t('col_region') }}</th><th scope="col">{{ t('col_stores') }}</th><th scope="col">{{ t('col_vs7') }}</th><th scope="col">{{ t('col_stockouts') }}</th></tr></thead>
+        <tbody>
+        {%- for r in vm.regions %}
+          <tr><td class="l">{{ r.name }}</td><td>{{ r.stores }}</td><td class="{{ r.vs_7d_trend }}">{{ r.vs_7d }}</td><td>{{ r.stockouts }}</td></tr>
+        {%- endfor %}
+        </tbody>
+      </table>
+    </div>
+  </figure>
+</section>
+
+<section class="section" id="stores" aria-labelledby="h-stores">
+  <div class="section__head"><h2 id="h-stores">{{ t('all_stores') }}</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th class="l" scope="col">{{ t('col_store') }}</th><th class="l" scope="col">{{ t('col_region') }}</th>
+        <th scope="col">{{ t('col_sales') }}</th><th scope="col">{{ t('col_avg7') }}</th><th scope="col">{{ t('col_vs7') }}</th>
+        <th scope="col">{{ t('col_z') }}</th><th scope="col">{{ t('col_tx') }}</th><th scope="col">{{ t('col_basket') }}</th>
+        <th scope="col">{{ t('col_stockouts') }}</th><th class="l" scope="col">{{ t('col_status') }}</th>
+      </tr></thead>
+      <tbody>
+      {%- for s in vm.stores %}
+        <tr{% if s.severity %} class="is-flagged"{% endif %}>
+          <td class="l">{{ s.name }}</td><td class="l">{{ s.region }}</td>
+          <td>{{ s.sales }}</td><td>{{ s.avg_7d }}</td><td class="{{ s.vs_7d_trend }}">{{ s.vs_7d }}</td>
+          <td>{{ s.z }}</td><td>{{ s.tx }}</td><td>{{ s.basket }}</td><td>{{ s.stockouts }}</td>
+          <td class="l"><span class="sev sev--{{ s.severity or 'normal' }}">{{ s.severity_label }}</span></td>
+        </tr>
+      {%- endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="method" aria-labelledby="h-method">
+  <div class="section__head">
+    <h2 id="h-method">{{ t('method') }}</h2>
+    <p class="section__note">{{ vm.method_intro }}</p>
+  </div>
+  <div class="table-wrap">
+    <table class="rules">
+      <thead><tr><th class="l" scope="col">{{ t('rule') }}</th><th class="l" scope="col">{{ t('severity') }}</th></tr></thead>
+      <tbody>
+      {%- for r in vm.rules %}
+        <tr><td class="l">{{ r.text }}</td><td class="l"><span class="sev sev--{{ r.severity }}">{{ r.severity_label }}</span></td></tr>
+      {%- endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+</div>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ t('upload_title') }}</title>
+{% include "_fonts.html.j2" %}
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+<header class="page bar-top">
+  <a class="wordmark" href="/?lang={{ lang }}">{{ t('product') }}</a>
+  <nav class="lang" aria-label="{{ t('language') }}">
+    <a href="/?lang=en"{% if lang == 'en' %} aria-current="true"{% endif %}>EN</a>
+    <a href="/?lang=id"{% if lang == 'id' %} aria-current="true"{% endif %}>ID</a>
+  </nav>
+</header>
+
+<main class="page upload">
+  <section class="upload__intro" aria-labelledby="h-upload">
+    <h1 class="title" id="h-upload">{{ t('upload_title') }}</h1>
+    <p class="lede">{{ t('upload_lede') }}</p>
+    <form class="upload__form" method="post" action="/upload" enctype="multipart/form-data" id="upload-form">
+      <input type="hidden" name="lang" value="{{ lang }}">
+      <div class="field">
+        <span class="label" id="file-label">{{ t('upload_label') }}</span>
+        <label class="file">
+          <input type="file" name="file" accept=".xlsx,.xls,.csv" aria-labelledby="file-label"
+                 aria-describedby="file-help"{% if error %} aria-invalid="true"{% endif %} required>
+          <span class="btn" aria-hidden="true">{{ t('choose_file') }}</span>
+          <span class="file__name" data-file-name>{{ t('no_file') }}</span>
+        </label>
+        {%- if error %}
+        <p class="error" id="file-help" role="alert"><strong>{{ t('err_title') }}</strong>{{ error }}</p>
+        {%- else %}
+        <p class="help" id="file-help">{{ t('upload_help') }}</p>
+        {%- endif %}
+      </div>
+      <div class="actions">
+        <button class="btn btn--primary" type="submit" data-busy-label="{{ t('building') }}">{{ t('build') }}</button>
+      </div>
+    </form>
+  </section>
+
+  {%- if sample_available %}
+  <aside class="sample" aria-labelledby="h-sample">
+    <h2 id="h-sample">{{ t('sample_title') }}</h2>
+    <p>{{ t('sample_note') }}</p>
+    <div class="actions"><a class="btn" href="/sample?lang={{ lang }}">{{ t('use_sample') }}</a></div>
+    <p class="section__note">{{ t('cli_hint') }}</p>
+    <pre class="cmd">python -m store_report report \
+  --input data/sample/daily_store_sales.xlsx \
+  --out examples{% if lang != 'en' %} --lang {{ lang }}{% endif %}</pre>
+  </aside>
+  {%- endif %}
+</main>
+
+<footer class="page foot">
+  <span>{{ t('footer_tool', v=version) }}</span>
+  <span>{{ t('synthetic') }}</span>
+</footer>
+<script>
+  (function () {
+    var form = document.getElementById("upload-form");
+    var input = form.querySelector("input[type=file]");
+    var name = form.querySelector("[data-file-name]");
+    input.addEventListener("change", function () {
+      name.textContent = input.files.length ? input.files[0].name : name.textContent;
+    });
+    form.addEventListener("submit", function () {
+      var btn = form.querySelector("button[type=submit]");
+      btn.dataset.state = "loading";
+      btn.setAttribute("aria-disabled", "true");
+      btn.textContent = btn.dataset.busyLabel;
+    });
+  })();
+</script>
+</body>
+</html>

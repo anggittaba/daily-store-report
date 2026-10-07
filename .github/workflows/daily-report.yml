@@ -1,0 +1,41 @@
+# Daily report example. Runs every day at 06:00 Jakarta time (23:00 UTC the day before).
+# Delivery stays OFF unless you set the repository variable DELIVERY_ENABLED=true
+# and add the Telegram / SMTP secrets. In this demo the input is freshly generated
+# synthetic data; in production you would fetch the real daily export instead.
+name: daily-report
+
+on:
+  schedule:
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install pandas numpy openpyxl jinja2
+      - name: Generate demo data (replace with your real export step)
+        run: python -m store_report generate --out data/today
+      - name: Build report (and send if enabled)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DELIVERY_ENABLED: ${{ vars.DELIVERY_ENABLED || 'false' }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python -m store_report report --input data/today/daily_store_sales.xlsx --out output --send
+      - uses: actions/upload-artifact@v4
+        with:
+          name: daily-store-report
+          path: output/
+          retention-days: 14

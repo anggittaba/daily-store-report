@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="{{ vm.lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ vm.t('doc_title') }} · {{ vm.date_iso }}</title>
+{% include "_fonts.html.j2" %}
+<style>
+{{ css | safe }}
+</style>
+</head>
+<body>
+<header class="page bar-top">
+  <span class="wordmark">{{ vm.t('product') }}</span>
+  <span class="doc-meta">{{ vm.t('doc_title') }} · {{ vm.t('generated', ts=vm.generated) }}</span>
+</header>
+<main>
+{% include "_body.html.j2" %}
+</main>
+<footer class="page foot">
+  <span>{{ vm.t('footer_tool', v=vm.version) }}</span>
+  <span>{{ vm.t('synthetic') }}</span>
+  <span><a href="#method">{{ vm.t('method') }}</a></span>
+</footer>
+</body>
+</html>

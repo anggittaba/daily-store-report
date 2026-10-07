@@ -1,0 +1,13 @@
+[
+  {
+    "date": "2026-10-07",
+    "scope": "redesign (multi-page: web app upload + report view, standalone HTML report)",
+    "macrostructure": "Workbench (app)",
+    "theme": "Cobalt",
+    "genre": "modern-minimal",
+    "nav": "N9 edge-aligned minimal",
+    "footer": "Ft2 inline single line",
+    "enrichment": "none",
+    "brief": "Daily Store Report Assistant · retail operations data tool"
+  }
+]

@@ -1,0 +1,10 @@
+date,store_code,kind,description
+2026-10-06,ST007,sales_drop,Sales cut to ~50% (simulated operational problem)
+2026-10-06,ST013,pos_offline,"POS offline all day, zero transactions recorded"
+2026-10-06,ST018,stockout_spike,Stock-out spike (simulated late delivery from the distribution centre)
+2026-10-06,ST011,sales_spike,Sales up ~65% (simulated bulk order)
+2026-09-16,ST004,pos_offline,POS offline all day (historical)
+2026-09-22,ST016,sales_drop,"Sales cut to ~60% (historical, simulated power cut)"
+2026-09-01,ST010,stockout_spike,High stock-outs three days in a row (historical)
+2026-09-02,ST010,stockout_spike,High stock-outs three days in a row (historical)
+2026-09-03,ST010,stockout_spike,High stock-outs three days in a row (historical)

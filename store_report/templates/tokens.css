@@ -1,0 +1,99 @@
+/* Hallmark · genre: modern-minimal · theme: Cobalt · design tokens
+   Cool engineered paper, cool charcoal ink, one cobalt signal accent.
+   Severity colours are data encodings, always paired with a text label.
+   Every colour and font in styles.css and the SVG charts reads from here. */
+:root {
+  /* paper + ink (hue 250–258, never pure white or black) */
+  --color-paper:    oklch(98.5% 0.004 250);
+  --color-paper-2:  oklch(96.5% 0.005 252);
+  --color-paper-3:  oklch(94% 0.006 254);
+  --color-ink:      oklch(24% 0.02 258);
+  --color-ink-2:    oklch(34% 0.018 257);
+  --color-muted:    oklch(50% 0.014 255);
+  --color-rule:     oklch(91% 0.008 255);
+  --color-rule-2:   oklch(83% 0.011 255);
+  --color-control:  oklch(64% 0.014 255);  /* input/button edges, 3:1 on paper */
+
+  /* the one signal */
+  --color-accent:     oklch(55% 0.20 256);
+  --color-accent-ink: oklch(99% 0.004 256);
+  --color-accent-hover: oklch(49% 0.19 256);
+  --color-focus:      oklch(55% 0.20 256);
+
+  /* trend colours for deltas (text) */
+  --color-up:   oklch(46% 0.11 155);
+  --color-down: oklch(50% 0.17 27);
+
+  /* severity fills (squares, bars) */
+  --color-critical: oklch(56% 0.19 27);
+  --color-high:     oklch(64% 0.16 52);
+  --color-medium:   oklch(84% 0.13 95);
+  --color-medium-edge: oklch(58% 0.11 85);  /* 3:1 outline around the light medium fill */
+  --color-error:    oklch(50% 0.17 27);
+
+  /* chart neutrals */
+  --color-bar:      oklch(80% 0.025 255);
+  --color-bar-2:    oklch(70% 0.03 255);
+  --color-shadow:   oklch(24% 0.02 258 / 0.25);
+
+  /* the one dark band (graphite) */
+  --color-band:       oklch(22% 0.016 260);
+  --color-band-rule:  oklch(34% 0.02 260);
+  --color-band-ink:   oklch(94% 0.008 255);
+  --color-band-ink-2: oklch(84% 0.012 256);
+  --color-band-muted: oklch(68% 0.014 256);
+  --color-band-accent: oklch(74% 0.14 256);
+
+  /* type: display + body, mono as a one-role outlier */
+  --font-display: "Space Grotesk", ui-sans-serif, "Segoe UI", sans-serif;
+  --font-body:    "IBM Plex Sans", ui-sans-serif, "Segoe UI", sans-serif;
+  /* outlier: command lines only (upload page + README-style hint) */
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* scale: major third, five sizes */
+  --text-xs:      0.75rem;
+  --text-sm:      0.875rem;
+  --text-base:    1rem;
+  --text-lg:      1.5625rem;
+  --text-display: clamp(2rem, 2.2vw + 1.1rem, 2.85rem);
+
+  --weight-body: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+  --tracking-display: -0.025em;
+  --tracking-label: 0.06em;
+  --leading-tight: 1.1;
+  --leading-body: 1.6;
+  --measure: 66ch;
+
+  /* space: 4 pt scale */
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+
+  --page-max: 1240px;
+  --gutter: clamp(1rem, 3.5vw, 2.5rem);
+  --rule: 1px;
+
+  /* shape */
+  --radius-btn: 6px;
+  --radius-input: 6px;
+  --radius-chip: 3px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+
+  /* layers */
+  --z-base: 1;
+  --z-sticky: 200;
+}
